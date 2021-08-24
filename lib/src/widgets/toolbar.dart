@@ -156,6 +156,41 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             iconSize: toolbarIconSize,
             controller: controller,
           ),
+        //
+
+        if (showQuote)
+          ToggleStyleButton(
+            attribute: Attribute.blockQuote,
+            controller: controller,
+            icon: Icons.format_quote,
+            iconSize: toolbarIconSize,
+          ),
+        if (showCodeBlock)
+          ToggleStyleButton(
+            attribute: Attribute.codeBlock,
+            controller: controller,
+            icon: Icons.code,
+            iconSize: toolbarIconSize,
+          ),
+        if (showLink)
+          LinkStyleButton(
+            controller: controller,
+            iconSize: toolbarIconSize,
+          ),
+        if (showIndent)
+          IndentButton(
+            icon: Icons.format_indent_increase,
+            iconSize: toolbarIconSize,
+            controller: controller,
+            isIncrease: true,
+          ),
+        if (showIndent)
+          IndentButton(
+            icon: Icons.format_indent_decrease,
+            iconSize: toolbarIconSize,
+            controller: controller,
+            isIncrease: false,
+          ),
         if (showColorButton)
           ColorButton(
             icon: Icons.color_lens,
@@ -252,13 +287,7 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             icon: Icons.check_box,
             iconSize: toolbarIconSize,
           ),
-        if (showCodeBlock)
-          ToggleStyleButton(
-            attribute: Attribute.codeBlock,
-            controller: controller,
-            icon: Icons.code,
-            iconSize: toolbarIconSize,
-          ),
+
         if (isButtonGroupShown[2] &&
             (isButtonGroupShown[3] || isButtonGroupShown[4]))
           VerticalDivider(
@@ -266,38 +295,14 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             endIndent: 12,
             color: Colors.grey.shade400,
           ),
-        if (showQuote)
-          ToggleStyleButton(
-            attribute: Attribute.blockQuote,
-            controller: controller,
-            icon: Icons.format_quote,
-            iconSize: toolbarIconSize,
-          ),
-        if (showIndent)
-          IndentButton(
-            icon: Icons.format_indent_increase,
-            iconSize: toolbarIconSize,
-            controller: controller,
-            isIncrease: true,
-          ),
-        if (showIndent)
-          IndentButton(
-            icon: Icons.format_indent_decrease,
-            iconSize: toolbarIconSize,
-            controller: controller,
-            isIncrease: false,
-          ),
+
         if (isButtonGroupShown[3] && isButtonGroupShown[4])
           VerticalDivider(
             indent: 12,
             endIndent: 12,
             color: Colors.grey.shade400,
           ),
-        if (showLink)
-          LinkStyleButton(
-            controller: controller,
-            iconSize: toolbarIconSize,
-          ),
+
         if (showHorizontalRule)
           InsertEmbedButton(
             controller: controller,
