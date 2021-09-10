@@ -114,20 +114,6 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
       toolBarHeight: toolbarIconSize * 2,
       multiRowsDisplay: multiRowsDisplay,
       children: [
-        if (showHistory)
-          HistoryButton(
-            icon: Icons.undo_outlined,
-            iconSize: toolbarIconSize,
-            controller: controller,
-            undo: true,
-          ),
-        if (showHistory)
-          HistoryButton(
-            icon: Icons.redo_outlined,
-            iconSize: toolbarIconSize,
-            controller: controller,
-            undo: false,
-          ),
         if (showBoldButton)
           ToggleStyleButton(
             attribute: Attribute.bold,
@@ -156,8 +142,6 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             iconSize: toolbarIconSize,
             controller: controller,
           ),
-        //
-
         if (showQuote)
           ToggleStyleButton(
             attribute: Attribute.blockQuote,
@@ -280,6 +264,20 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             icon: Icons.format_list_bulleted,
             iconSize: toolbarIconSize,
           ),
+        if (showHistory)
+          HistoryButton(
+            icon: Icons.undo_outlined,
+            iconSize: toolbarIconSize,
+            controller: controller,
+            undo: true,
+          ),
+        if (showHistory)
+          HistoryButton(
+            icon: Icons.redo_outlined,
+            iconSize: toolbarIconSize,
+            controller: controller,
+            undo: false,
+          ),
         if (showListCheck)
           ToggleCheckListButton(
             attribute: Attribute.unchecked,
@@ -287,7 +285,6 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             icon: Icons.check_box,
             iconSize: toolbarIconSize,
           ),
-
         if (isButtonGroupShown[2] &&
             (isButtonGroupShown[3] || isButtonGroupShown[4]))
           VerticalDivider(
@@ -295,14 +292,12 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             endIndent: 12,
             color: Colors.grey.shade400,
           ),
-
         if (isButtonGroupShown[3] && isButtonGroupShown[4])
           VerticalDivider(
             indent: 12,
             endIndent: 12,
             color: Colors.grey.shade400,
           ),
-
         if (showHorizontalRule)
           InsertEmbedButton(
             controller: controller,
