@@ -43,7 +43,8 @@ const linkPrefixes = [
   'skype:',
   'sip:', // Lync
   'whatsapp:',
-  'http'
+  'http',
+  'www.'
 ];
 
 abstract class EditorState extends State<RawEditor> {
