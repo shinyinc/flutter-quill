@@ -292,7 +292,9 @@ class AutoFormatLinksRule extends InsertRule {
     try {
       final cand = (prev.data as String).split('\n').last.split(' ').last;
       final link = Uri.parse(cand);
-      if (!['https', 'http'].contains(link.scheme)) {
+
+      if (!['https', 'http'].contains(link.scheme) &&
+          !link.path.toLowerCase().startsWith('www.')) {
         return null;
       }
       final attributes = prev.attributes ?? <String, dynamic>{};
