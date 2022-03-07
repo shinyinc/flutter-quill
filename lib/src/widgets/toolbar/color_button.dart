@@ -3,10 +3,11 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import '../../models/documents/attribute.dart';
 import '../../models/documents/style.dart';
+import '../../models/themes/quill_icon_theme.dart';
+import '../../translations/toolbar.i18n.dart';
 import '../../utils/color.dart';
 import '../controller.dart';
 import '../toolbar.dart';
-import 'quill_icon_button.dart';
 
 /// Controls color styles.
 ///
@@ -18,6 +19,7 @@ class ColorButton extends StatefulWidget {
     required this.controller,
     required this.background,
     this.iconSize = kDefaultIconSize,
+    this.iconTheme,
     Key? key,
   }) : super(key: key);
 
@@ -25,6 +27,7 @@ class ColorButton extends StatefulWidget {
   final double iconSize;
   final bool background;
   final QuillController controller;
+  final QuillIconTheme? iconTheme;
 
   @override
   _ColorButtonState createState() => _ColorButtonState();
@@ -34,7 +37,7 @@ class _ColorButtonState extends State<ColorButton> {
   late bool _isToggledColor;
   late bool _isToggledBackground;
   late bool _isWhite;
-  late bool _isWhitebackground;
+  late bool _isWhiteBackground;
 
   Style get _selectionStyle => widget.controller.getSelectionStyle();
 
@@ -46,7 +49,7 @@ class _ColorButtonState extends State<ColorButton> {
           widget.controller.getSelectionStyle().attributes);
       _isWhite = _isToggledColor &&
           _selectionStyle.attributes['color']!.value == '#ffffff';
-      _isWhitebackground = _isToggledBackground &&
+      _isWhiteBackground = _isToggledBackground &&
           _selectionStyle.attributes['background']!.value == '#ffffff';
     });
   }
@@ -58,7 +61,7 @@ class _ColorButtonState extends State<ColorButton> {
     _isToggledBackground = _getIsToggledBackground(_selectionStyle.attributes);
     _isWhite = _isToggledColor &&
         _selectionStyle.attributes['color']!.value == '#ffffff';
-    _isWhitebackground = _isToggledBackground &&
+    _isWhiteBackground = _isToggledBackground &&
         _selectionStyle.attributes['background']!.value == '#ffffff';
     widget.controller.addListener(_didChangeEditingValue);
   }
@@ -82,7 +85,7 @@ class _ColorButtonState extends State<ColorButton> {
           _getIsToggledBackground(_selectionStyle.attributes);
       _isWhite = _isToggledColor &&
           _selectionStyle.attributes['color']!.value == '#ffffff';
-      _isWhitebackground = _isToggledBackground &&
+      _isWhiteBackground = _isToggledBackground &&
           _selectionStyle.attributes['background']!.value == '#ffffff';
     }
   }
@@ -98,20 +101,20 @@ class _ColorButtonState extends State<ColorButton> {
     final theme = Theme.of(context);
     final iconColor = _isToggledColor && !widget.background && !_isWhite
         ? stringToColor(_selectionStyle.attributes['color']!.value)
-        : theme.iconTheme.color;
+        : (widget.iconTheme?.iconUnselectedColor ?? theme.iconTheme.color);
 
     final iconColorBackground =
-        _isToggledBackground && widget.background && !_isWhitebackground
+        _isToggledBackground && widget.background && !_isWhiteBackground
             ? stringToColor(_selectionStyle.attributes['background']!.value)
-            : theme.iconTheme.color;
+            : (widget.iconTheme?.iconUnselectedColor ?? theme.iconTheme.color);
 
     final fillColor = _isToggledColor && !widget.background && _isWhite
         ? stringToColor('#ffffff')
-        : theme.canvasColor;
+        : (widget.iconTheme?.iconUnselectedFillColor ?? theme.canvasColor);
     final fillColorBackground =
-        _isToggledBackground && widget.background && _isWhitebackground
+        _isToggledBackground && widget.background && _isWhiteBackground
             ? stringToColor('#ffffff')
-            : theme.canvasColor;
+            : (widget.iconTheme?.iconUnselectedFillColor ?? theme.canvasColor);
 
     return QuillIconButton(
       highlightElevation: 0,
@@ -140,7 +143,7 @@ class _ColorButtonState extends State<ColorButton> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Color'),
+        title: Text('Select Color'.i18n),
         backgroundColor: Theme.of(context).canvasColor,
         content: SingleChildScrollView(
           child: MaterialPicker(

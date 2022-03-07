@@ -149,18 +149,23 @@ class _HomePageState extends State<HomePage> {
       onVideoPickCallback: _onVideoPickCallback,
       // uncomment to provide a custom "pick from" dialog.
       // mediaPickSettingSelector: _selectMediaPickSetting,
+      showAlignmentButtons: true,
     );
     if (kIsWeb) {
       toolbar = QuillToolbar.basic(
-          controller: _controller!,
-          onImagePickCallback: _onImagePickCallback,
-          webImagePickImpl: _webImagePickImpl);
+        controller: _controller!,
+        onImagePickCallback: _onImagePickCallback,
+        webImagePickImpl: _webImagePickImpl,
+        showAlignmentButtons: true,
+      );
     }
     if (_isDesktop()) {
       toolbar = QuillToolbar.basic(
-          controller: _controller!,
-          onImagePickCallback: _onImagePickCallback,
-          filePickImpl: openFileSystemPickerForDesktop);
+        controller: _controller!,
+        onImagePickCallback: _onImagePickCallback,
+        filePickImpl: openFileSystemPickerForDesktop,
+        showAlignmentButtons: true,
+      );
     }
 
     return SafeArea(
@@ -235,6 +240,7 @@ class _HomePageState extends State<HomePage> {
     return copiedFile.path.toString();
   }
 
+  // ignore: unused_element
   Future<MediaPickSetting?> _selectMediaPickSetting(BuildContext context) =>
       showDialog<MediaPickSetting>(
         context: context,

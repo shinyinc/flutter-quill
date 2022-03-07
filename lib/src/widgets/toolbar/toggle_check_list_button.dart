@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../models/documents/attribute.dart';
 import '../../models/documents/style.dart';
+import '../../models/themes/quill_icon_theme.dart';
 import '../controller.dart';
 import '../toolbar.dart';
-import 'toggle_style_button.dart';
 
 class ToggleCheckListButton extends StatefulWidget {
   const ToggleCheckListButton({
@@ -14,6 +14,7 @@ class ToggleCheckListButton extends StatefulWidget {
     this.iconSize = kDefaultIconSize,
     this.fillColor,
     this.childBuilder = defaultToggleStyleButtonBuilder,
+    this.iconTheme,
     Key? key,
   }) : super(key: key);
 
@@ -27,6 +28,8 @@ class ToggleCheckListButton extends StatefulWidget {
   final ToggleStyleButtonBuilder childBuilder;
 
   final Attribute attribute;
+
+  final QuillIconTheme? iconTheme;
 
   @override
   _ToggleCheckListButtonState createState() => _ToggleCheckListButtonState();
@@ -52,15 +55,20 @@ class _ToggleCheckListButtonState extends State<ToggleCheckListButton> {
   }
 
   bool _getIsToggled(Map<String, Attribute> attrs) {
-    if (widget.attribute.key == Attribute.list.key) {
-      final attribute = attrs[widget.attribute.key];
-      if (attribute == null) {
-        return false;
-      }
-      return attribute.value == widget.attribute.value ||
-          attribute.value == Attribute.checked.value;
+    var attribute = widget.controller.toolbarButtonToggler[Attribute.list.key];
+
+    if (attribute == null) {
+      attribute = attrs[Attribute.list.key];
+    } else {
+      // checkbox tapping causes controller.selection to go to offset 0
+      widget.controller.toolbarButtonToggler.remove(Attribute.list.key);
     }
-    return attrs.containsKey(widget.attribute.key);
+
+    if (attribute == null) {
+      return false;
+    }
+    return attribute.value == Attribute.unchecked.value ||
+        attribute.value == Attribute.checked.value;
   }
 
   @override
@@ -81,18 +89,15 @@ class _ToggleCheckListButtonState extends State<ToggleCheckListButton> {
 
   @override
   Widget build(BuildContext context) {
-    final isInCodeBlock =
-        _selectionStyle.attributes.containsKey(Attribute.codeBlock.key);
-    final isEnabled =
-        !isInCodeBlock || Attribute.list.key == Attribute.codeBlock.key;
     return widget.childBuilder(
       context,
       Attribute.unchecked,
       widget.icon,
       widget.fillColor,
       _isToggled,
-      isEnabled ? _toggleAttribute : null,
+      _toggleAttribute,
       widget.iconSize,
+      widget.iconTheme,
     );
   }
 

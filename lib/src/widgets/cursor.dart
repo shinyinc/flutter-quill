@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import '../utils/platform.dart';
 import 'box.dart';
 
 /// Style properties of editing cursor.
@@ -131,6 +131,17 @@ class CursorCont extends ChangeNotifier {
   Timer? _cursorTimer;
   bool _targetCursorVisibility = false;
 
+  final ValueNotifier<TextPosition?> _floatingCursorTextPosition =
+      ValueNotifier(null);
+
+  ValueNotifier<TextPosition?> get floatingCursorTextPosition =>
+      _floatingCursorTextPosition;
+
+  void setFloatingCursorTextPosition(TextPosition? position) =>
+      _floatingCursorTextPosition.value = position;
+
+  bool get isFloatingCursorActive => floatingCursorTextPosition.value != null;
+
   CursorStyle _style;
   CursorStyle get style => _style;
   set style(CursorStyle value) {
@@ -228,13 +239,13 @@ class CursorCont extends ChangeNotifier {
 
 /// Paints the editing cursor.
 class CursorPainter {
-  CursorPainter(
-    this.editable,
-    this.style,
-    this.prototype,
-    this.color,
-    this.devicePixelRatio,
-  );
+  CursorPainter({
+    required this.editable,
+    required this.style,
+    required this.prototype,
+    required this.color,
+    required this.devicePixelRatio,
+  });
 
   final RenderContentProxyBox? editable;
   final CursorStyle style;
@@ -245,10 +256,11 @@ class CursorPainter {
   /// Paints cursor on [canvas] at specified [position].
   /// [offset] is global top left (x, y) of text line
   /// [position] is relative (x) in text line
-  void paint(Canvas canvas, Offset offset, TextPosition position) {
+  void paint(
+      Canvas canvas, Offset offset, TextPosition position, bool lineHasEmbed) {
     // relative (x, y) to global offset
     var relativeCaretOffset = editable!.getOffsetForCaret(position, prototype);
-    if (relativeCaretOffset == Offset.zero) {
+    if (lineHasEmbed && relativeCaretOffset == Offset.zero) {
       relativeCaretOffset = editable!.getOffsetForCaret(
           TextPosition(
               offset: position.offset - 1, affinity: position.affinity),
@@ -257,6 +269,7 @@ class CursorPainter {
       relativeCaretOffset =
           Offset(relativeCaretOffset.dx + 6, relativeCaretOffset.dy);
     }
+
     final caretOffset = relativeCaretOffset + offset;
     var caretRect = prototype.shift(caretOffset);
     if (style.offset != null) {
@@ -274,33 +287,24 @@ class CursorPainter {
 
     final caretHeight = editable!.getFullHeightForCaret(position);
     if (caretHeight != null) {
-      switch (defaultTargetPlatform) {
-        case TargetPlatform.android:
-        case TargetPlatform.fuchsia:
-        case TargetPlatform.linux:
-        case TargetPlatform.windows:
-          // Override the height to take the full height of the glyph at the
-          // TextPosition when not on iOS. iOS has special handling that
-          // creates a taller caret.
-          caretRect = Rect.fromLTWH(
-            caretRect.left,
-            caretRect.top - 2.0,
-            caretRect.width,
-            caretHeight,
-          );
-          break;
-        case TargetPlatform.iOS:
-        case TargetPlatform.macOS:
-          // Center the caret vertically along the text.
-          caretRect = Rect.fromLTWH(
-            caretRect.left,
-            caretRect.top + (caretHeight - caretRect.height) / 2,
-            caretRect.width,
-            caretRect.height,
-          );
-          break;
-        default:
-          throw UnimplementedError();
+      if (isAppleOS()) {
+        // Center the caret vertically along the text.
+        caretRect = Rect.fromLTWH(
+          caretRect.left,
+          caretRect.top + (caretHeight - caretRect.height) / 2,
+          caretRect.width,
+          caretRect.height,
+        );
+      } else {
+        // Override the height to take the full height of the glyph at the
+        // TextPosition when not on iOS. iOS has special handling that
+        // creates a taller caret.
+        caretRect = Rect.fromLTWH(
+          caretRect.left,
+          caretRect.top - 2.0,
+          caretRect.width,
+          caretHeight,
+        );
       }
     }
 

@@ -12,6 +12,7 @@ enum AttributeScope {
 class Attribute<T> {
   Attribute(this.key, this.scope, this.value);
 
+  /// Unique key of this attribute.
   final String key;
   final AttributeScope scope;
   final T value;
@@ -19,8 +20,10 @@ class Attribute<T> {
   static final Map<String, Attribute> _registry = LinkedHashMap.of({
     Attribute.bold.key: Attribute.bold,
     Attribute.italic.key: Attribute.italic,
+    Attribute.small.key: Attribute.small,
     Attribute.underline.key: Attribute.underline,
     Attribute.strikeThrough.key: Attribute.strikeThrough,
+    Attribute.inlineCode.key: Attribute.inlineCode,
     Attribute.font.key: Attribute.font,
     Attribute.size.key: Attribute.size,
     Attribute.link.key: Attribute.link,
@@ -29,6 +32,7 @@ class Attribute<T> {
     Attribute.placeholder.key: Attribute.placeholder,
     Attribute.header.key: Attribute.header,
     Attribute.align.key: Attribute.align,
+    Attribute.direction.key: Attribute.direction,
     Attribute.list.key: Attribute.list,
     Attribute.codeBlock.key: Attribute.codeBlock,
     Attribute.blockQuote.key: Attribute.blockQuote,
@@ -37,15 +41,20 @@ class Attribute<T> {
     Attribute.height.key: Attribute.height,
     Attribute.style.key: Attribute.style,
     Attribute.token.key: Attribute.token,
+    Attribute.script.key: Attribute.script,
   });
 
   static final BoldAttribute bold = BoldAttribute();
 
   static final ItalicAttribute italic = ItalicAttribute();
 
+  static final SmallAttribute small = SmallAttribute();
+
   static final UnderlineAttribute underline = UnderlineAttribute();
 
   static final StrikeThroughAttribute strikeThrough = StrikeThroughAttribute();
+
+  static final InlineCodeAttribute inlineCode = InlineCodeAttribute();
 
   static final FontAttribute font = FontAttribute(null);
 
@@ -71,6 +80,8 @@ class Attribute<T> {
 
   static final BlockQuoteAttribute blockQuote = BlockQuoteAttribute();
 
+  static final DirectionAttribute direction = DirectionAttribute(null);
+
   static final WidthAttribute width = WidthAttribute(null);
 
   static final HeightAttribute height = HeightAttribute(null);
@@ -79,9 +90,20 @@ class Attribute<T> {
 
   static final TokenAttribute token = TokenAttribute('');
 
+  static final ScriptAttribute script = ScriptAttribute('');
+
+  static const String mobileWidth = 'mobileWidth';
+
+  static const String mobileHeight = 'mobileHeight';
+
+  static const String mobileMargin = 'mobileMargin';
+
+  static const String mobileAlignment = 'mobileAlignment';
+
   static final Set<String> inlineKeys = {
     Attribute.bold.key,
     Attribute.italic.key,
+    Attribute.small.key,
     Attribute.underline.key,
     Attribute.strikeThrough.key,
     Attribute.link.key,
@@ -97,6 +119,7 @@ class Attribute<T> {
     Attribute.codeBlock.key,
     Attribute.blockQuote.key,
     Attribute.indent.key,
+    Attribute.direction.key,
   });
 
   static final Set<String> blockKeysExceptHeader = LinkedHashSet.of({
@@ -105,6 +128,14 @@ class Attribute<T> {
     Attribute.codeBlock.key,
     Attribute.blockQuote.key,
     Attribute.indent.key,
+    Attribute.direction.key,
+  });
+
+  static final Set<String> exclusiveBlockKeys = LinkedHashSet.of({
+    Attribute.header.key,
+    Attribute.list.key,
+    Attribute.codeBlock.key,
+    Attribute.blockQuote.key,
   });
 
   static Attribute<int?> get h1 => HeaderAttribute(level: 1);
@@ -136,6 +167,9 @@ class Attribute<T> {
 
   // "attributes":{"list":"unchecked"}
   static Attribute<String?> get unchecked => ListAttribute('unchecked');
+
+  // "attributes":{"direction":"rtl"}
+  static Attribute<String?> get rtl => DirectionAttribute('rtl');
 
   // "attributes":{"indent":1"}
   static Attribute<int?> get indentL1 => IndentAttribute(level: 1);
@@ -217,12 +251,20 @@ class ItalicAttribute extends Attribute<bool> {
   ItalicAttribute() : super('italic', AttributeScope.INLINE, true);
 }
 
+class SmallAttribute extends Attribute<bool> {
+  SmallAttribute() : super('small', AttributeScope.INLINE, true);
+}
+
 class UnderlineAttribute extends Attribute<bool> {
   UnderlineAttribute() : super('underline', AttributeScope.INLINE, true);
 }
 
 class StrikeThroughAttribute extends Attribute<bool> {
   StrikeThroughAttribute() : super('strike', AttributeScope.INLINE, true);
+}
+
+class InlineCodeAttribute extends Attribute<bool> {
+  InlineCodeAttribute() : super('code', AttributeScope.INLINE, true);
 }
 
 class FontAttribute extends Attribute<String?> {
@@ -275,6 +317,11 @@ class BlockQuoteAttribute extends Attribute<bool> {
   BlockQuoteAttribute() : super('blockquote', AttributeScope.BLOCK, true);
 }
 
+class DirectionAttribute extends Attribute<String?> {
+  DirectionAttribute(String? val)
+      : super('direction', AttributeScope.BLOCK, val);
+}
+
 class WidthAttribute extends Attribute<String?> {
   WidthAttribute(String? val) : super('width', AttributeScope.IGNORE, val);
 }
@@ -289,4 +336,9 @@ class StyleAttribute extends Attribute<String?> {
 
 class TokenAttribute extends Attribute<String> {
   TokenAttribute(String val) : super('token', AttributeScope.IGNORE, val);
+}
+
+// `script` is supposed to be inline attribute but it is not supported yet
+class ScriptAttribute extends Attribute<String> {
+  ScriptAttribute(String val) : super('script', AttributeScope.IGNORE, val);
 }
