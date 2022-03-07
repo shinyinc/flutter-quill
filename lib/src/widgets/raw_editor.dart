@@ -25,14 +25,10 @@ import 'cursor.dart';
 import 'default_styles.dart';
 import 'delegate.dart';
 import 'editor.dart';
-<<<<<<< HEAD
-import 'keyboard_listener.dart' as keyboard_listener;
-=======
 import 'embeds/default_embed_builder.dart';
 import 'embeds/image.dart';
 import 'keyboard_listener.dart';
 import 'link.dart';
->>>>>>> upstream/master
 import 'proxy.dart';
 import 'quill_single_child_scroll_view.dart';
 import 'raw_editor/raw_editor_state_selection_delegate_mixin.dart';
@@ -243,8 +239,6 @@ class RawEditorState extends EditorState
         RawEditorStateSelectionDelegateMixin {
   final GlobalKey _editorKey = GlobalKey();
 
-  // Keyboard
-  late keyboard_listener.KeyboardListener _keyboardListener;
   KeyboardVisibilityController? _keyboardVisibilityController;
   StreamSubscription<bool>? _keyboardVisibilitySubscription;
   bool _keyboardVisible = false;
@@ -265,6 +259,7 @@ class RawEditorState extends EditorState
 
   // Focus
   bool _didAutoFocus = false;
+
   bool get _hasFocus => widget.focusNode.hasFocus;
 
   // Theme
@@ -274,6 +269,7 @@ class RawEditorState extends EditorState
   @override
   List<Tuple2<int, Style>> get pasteStyle => _pasteStyle;
   List<Tuple2<int, Style>> _pasteStyle = <Tuple2<int, Style>>[];
+
   @override
   String get pastePlainText => _pastePlainText;
   String _pastePlainText = '';
@@ -562,17 +558,9 @@ class RawEditorState extends EditorState
       tickerProvider: this,
     );
 
-<<<<<<< HEAD
-    _keyboardListener = keyboard_listener.KeyboardListener(
-      handleCursorMovement,
-      handleShortcut,
-      handleDelete,
-    );
-=======
     // Floating cursor
     _floatingCursorResetController = AnimationController(vsync: this);
     _floatingCursorResetController.addListener(onFloatingCursorResetTick);
->>>>>>> upstream/master
 
     if (isKeyboardOS()) {
       _keyboardVisible = true;
@@ -1410,6 +1398,7 @@ class _DocumentBoundary extends _TextBoundary {
   @override
   TextPosition getLeadingTextBoundaryAt(TextPosition position) =>
       const TextPosition(offset: 0);
+
   @override
   TextPosition getTrailingTextBoundaryAt(TextPosition position) {
     return TextPosition(

@@ -74,3 +74,4 @@ example/ios/Podfile.lock
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 pubspec.lock
+/.fvm/flutter_sdk
