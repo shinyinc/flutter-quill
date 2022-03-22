@@ -233,6 +233,8 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
           LinkStyleButton(
             controller: controller,
             iconSize: toolbarIconSize,
+            iconTheme: iconTheme,
+            dialogTheme: dialogTheme,
           ),
         if (showIndent)
           IndentButton(
@@ -390,14 +392,6 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             iconSize: toolbarIconSize,
             iconTheme: iconTheme,
           ),
-        if (showCodeBlock)
-          ToggleStyleButton(
-            attribute: Attribute.codeBlock,
-            controller: controller,
-            icon: Icons.code,
-            iconSize: toolbarIconSize,
-            iconTheme: iconTheme,
-          ),
         if (showDividers &&
             isButtonGroupShown[3] &&
             (isButtonGroupShown[4] || isButtonGroupShown[5]))
@@ -406,42 +400,11 @@ class QuillToolbar extends StatelessWidget implements PreferredSizeWidget {
             endIndent: 12,
             color: Colors.grey.shade400,
           ),
-        if (showQuote)
-          ToggleStyleButton(
-            attribute: Attribute.blockQuote,
-            controller: controller,
-            icon: Icons.format_quote,
-            iconSize: toolbarIconSize,
-            iconTheme: iconTheme,
-          ),
-        if (showIndent)
-          IndentButton(
-            icon: Icons.format_indent_increase,
-            iconSize: toolbarIconSize,
-            controller: controller,
-            isIncrease: true,
-            iconTheme: iconTheme,
-          ),
-        if (showIndent)
-          IndentButton(
-            icon: Icons.format_indent_decrease,
-            iconSize: toolbarIconSize,
-            controller: controller,
-            isIncrease: false,
-            iconTheme: iconTheme,
-          ),
         if (showDividers && isButtonGroupShown[4] && isButtonGroupShown[5])
           VerticalDivider(
             indent: 12,
             endIndent: 12,
             color: Colors.grey.shade400,
-          ),
-        if (showLink)
-          LinkStyleButton(
-            controller: controller,
-            iconSize: toolbarIconSize,
-            iconTheme: iconTheme,
-            dialogTheme: dialogTheme,
           ),
       ],
     );
