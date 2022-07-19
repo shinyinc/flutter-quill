@@ -168,6 +168,16 @@ mixin RawEditorStateTextInputClientMixin on EditorState
     // no-op
   }
 
+  @override
+  void insertTextPlaceholder(Size size) {
+    // no-op
+  }
+
+  @override
+  void removeTextPlaceholder() {
+    // no-op
+  }
+
   // The time it takes for the floating cursor to snap to the text aligned
   // cursor position after the user has finished placing it.
   static const Duration _floatingCursorResetTime = Duration(milliseconds: 125);
